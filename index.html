@@ -916,14 +916,30 @@
 
             <div class="form-card r r1">
                 <form id="pi-form">
-                    <div class="form-field">
-                        <label for="email">Your email</label>
-                        <input type="email" id="email" name="email" placeholder="you@company.com" required>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="name">Your name</label>
+                            <input type="text" id="name" name="name" placeholder="Maria Papadopoulou">
+                        </div>
+                        <div class="form-field">
+                            <label for="company">Company / Practice</label>
+                            <input type="text" id="company" name="company" placeholder="Papadopoulou & Associates">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="email">Your email *</label>
+                            <input type="email" id="email" name="email" placeholder="you@company.com" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="phone">WhatsApp / Phone</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+30 69x xxx xxxx">
+                        </div>
                     </div>
                     <div class="form-field">
-                        <label for="message">What do you need?</label>
+                        <label for="message">What do you need? *</label>
                         <textarea id="message" name="message" placeholder="Describe the tasks or processes you want automated. What's consuming the most time? What would the ideal outcome look like? Be as detailed as you want — the more context, the better our assessment." required></textarea>
-                        <div class="form-hint">A few sentences is enough. Detail helps.</div>
+                        <div class="form-hint">A few sentences is enough. Detail helps. If you provide your WhatsApp number, we'll communicate there.</div>
                     </div>
                     <div class="form-submit">
                         <button type="submit" id="submit-btn">Submit</button>
@@ -966,24 +982,31 @@
             });
         });
 
-        // Form submission to LOSC
+        // Form submission to PI pipeline
         const LOSC_URL = 'https://talk-incidents-rico-artistic.trycloudflare.com';
         document.getElementById('pi-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
             const status = document.getElementById('form-status');
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
+
+            const payload = {
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+                name: document.getElementById('name').value || null,
+                company: document.getElementById('company').value || null,
+                phone: document.getElementById('phone').value || null,
+                source: 'personalintelligence.ai',
+            };
 
             btn.disabled = true;
             btn.textContent = 'Sending...';
             status.style.display = 'none';
 
             try {
-                const res = await fetch(LOSC_URL + '/forms/submit', {
+                const res = await fetch(LOSC_URL + '/pipeline/submit', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, message, source: 'personalintelligence.ai' }),
+                    body: JSON.stringify(payload),
                 });
                 const data = await res.json();
                 if (data.success) {

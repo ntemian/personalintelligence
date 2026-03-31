@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback — Personal Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0c1220;
+            --surface: #111827;
+            --surface-2: #162033;
+            --surface-3: #1c2940;
+            --border: rgba(148,163,194,0.1);
+            --accent: #10b981;
+            --accent-soft: rgba(16,185,129,0.08);
+            --white: #f0f4fc;
+            --text: rgba(240,244,252,0.88);
+            --text-2: rgba(240,244,252,0.55);
+            --text-3: rgba(240,244,252,0.3);
+            --font: 'Inter', -apple-system, system-ui, sans-serif;
+            --radius: 12px;
+            --radius-lg: 20px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            -webkit-font-smoothing: antialiased;
+        }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            max-width: 520px;
+            width: 100%;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        .brand-mark {
+            width: 28px; height: 28px;
+            border-radius: 7px;
+            background: var(--accent);
+            display: grid; place-items: center;
+            font-size: 0.7rem; font-weight: 700;
+            color: var(--bg);
+        }
+        .brand-name { font-size: 0.88rem; font-weight: 600; color: var(--white); }
+        h1 {
+            font-size: 1.5rem; font-weight: 700;
+            color: var(--white); margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+        .subtitle {
+            font-size: 0.88rem; color: var(--text-2);
+            margin-bottom: 2rem; line-height: 1.6;
+        }
+
+        /* Star rating */
+        .stars { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+        .star {
+            width: 44px; height: 44px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            display: grid; place-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.3rem;
+            color: var(--text-3);
+        }
+        .star:hover, .star.active {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+            color: #fbbf24;
+        }
+
+        .field { margin-bottom: 1.2rem; }
+        label {
+            display: block;
+            font-size: 0.72rem; font-weight: 550;
+            color: var(--text-2);
+            letter-spacing: 0.03em;
+            margin-bottom: 0.4rem;
+        }
+        textarea, input[type="text"] {
+            width: 100%;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0.75rem 1rem;
+            color: var(--white);
+            font-family: var(--font);
+            font-size: 0.88rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        textarea { resize: vertical; min-height: 120px; line-height: 1.65; }
+        textarea:focus, input:focus {
+            border-color: var(--accent);
+            background: var(--surface-3);
+        }
+        textarea::placeholder, input::placeholder { color: var(--text-3); }
+
+        .consent {
+            display: flex; align-items: flex-start; gap: 0.6rem;
+            margin-bottom: 1.5rem; cursor: pointer;
+        }
+        .consent input { margin-top: 2px; accent-color: var(--accent); }
+        .consent span { font-size: 0.82rem; color: var(--text-2); line-height: 1.5; }
+
+        button {
+            width: 100%;
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            border-radius: var(--radius);
+            padding: 0.85rem;
+            font-family: var(--font);
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+        button:hover {
+            background: #34d399;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(16,185,129,0.25);
+        }
+        button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        #status {
+            text-align: center; margin-top: 1rem;
+            font-size: 0.85rem; color: var(--accent);
+            display: none;
+        }
+
+        .thank-you {
+            text-align: center; padding: 2rem 0;
+            display: none;
+        }
+        .thank-you h2 { font-size: 1.3rem; color: var(--white); margin-bottom: 0.5rem; }
+        .thank-you p { color: var(--text-2); font-size: 0.88rem; }
+
+        @media (max-width: 480px) {
+            body { padding: 1rem; }
+            .card { padding: 2rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="brand">
+            <div class="brand-mark">PI</div>
+            <span class="brand-name">Personal Intelligence</span>
+        </div>
+
+        <div id="form-view">
+            <h1>How did we do?</h1>
+            <p class="subtitle">Your feedback helps us build better systems. It takes 30 seconds.</p>
+
+            <form id="feedback-form">
+                <label>Overall satisfaction</label>
+                <div class="stars" id="stars">
+                    <div class="star" data-score="1">1</div>
+                    <div class="star" data-score="2">2</div>
+                    <div class="star" data-score="3">3</div>
+                    <div class="star" data-score="4">4</div>
+                    <div class="star" data-score="5">5</div>
+                </div>
+
+                <div class="field">
+                    <label for="text">What worked well? What could improve?</label>
+                    <textarea id="text" name="text" placeholder="Be honest — we can take it. Specific details help us most." required></textarea>
+                </div>
+
+                <label class="consent">
+                    <input type="checkbox" id="testimonial">
+                    <span>You may use my feedback as a testimonial on your website (anonymised unless I say otherwise).</span>
+                </label>
+
+                <button type="submit" id="submit-btn">Send Feedback</button>
+                <div id="status"></div>
+            </form>
+        </div>
+
+        <div class="thank-you" id="thank-you">
+            <h2>Thank you!</h2>
+            <p>We appreciate your honest feedback. It directly shapes how we work.</p>
+        </div>
+    </div>
+
+    <script>
+        const LOSC_URL = 'https://talk-incidents-rico-artistic.trycloudflare.com';
+        let selectedScore = 0;
+
+        // Star rating
+        document.querySelectorAll('.star').forEach(star => {
+            star.addEventListener('click', () => {
+                selectedScore = parseInt(star.dataset.score);
+                document.querySelectorAll('.star').forEach((s, i) => {
+                    s.classList.toggle('active', i < selectedScore);
+                });
+            });
+        });
+
+        // Get lead ID from URL
+        const params = new URLSearchParams(window.location.search);
+        const leadId = params.get('lead');
+
+        document.getElementById('feedback-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!selectedScore) { alert('Please select a score.'); return; }
+            if (!leadId) { alert('Invalid feedback link.'); return; }
+
+            const btn = document.getElementById('submit-btn');
+            const status = document.getElementById('status');
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+
+            try {
+                const resp = await fetch(`${LOSC_URL}/pipeline/feedback/${leadId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        score: selectedScore,
+                        text: document.getElementById('text').value,
+                        testimonial_consent: document.getElementById('testimonial').checked,
+                    }),
+                });
+
+                if (resp.ok) {
+                    document.getElementById('form-view').style.display = 'none';
+                    document.getElementById('thank-you').style.display = 'block';
+                } else {
+                    const data = await resp.json();
+                    status.textContent = data.error || 'Something went wrong.';
+                    status.style.display = 'block';
+                    status.style.color = '#ef4444';
+                    btn.disabled = false;
+                    btn.textContent = 'Send Feedback';
+                }
+            } catch (err) {
+                status.textContent = 'Network error. Please try again.';
+                status.style.display = 'block';
+                status.style.color = '#ef4444';
+                btn.disabled = false;
+                btn.textContent = 'Send Feedback';
+            }
+        });
+    </script>
+</body>
+</html>
