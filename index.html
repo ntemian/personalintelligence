@@ -915,7 +915,7 @@
             </div>
 
             <div class="form-card r r1">
-                <form action="https://formspree.io/f/placeholder" method="POST">
+                <form id="pi-form">
                     <div class="form-field">
                         <label for="email">Your email</label>
                         <input type="email" id="email" name="email" placeholder="you@company.com" required>
@@ -926,8 +926,9 @@
                         <div class="form-hint">A few sentences is enough. Detail helps.</div>
                     </div>
                     <div class="form-submit">
-                        <button type="submit">Submit</button>
+                        <button type="submit" id="submit-btn">Submit</button>
                     </div>
+                    <div id="form-status" style="text-align:center;margin-top:1rem;font-size:0.85rem;color:var(--accent);display:none;"></div>
                 </form>
             </div>
             <div class="form-footer r r2">
@@ -963,6 +964,44 @@
                 const t = document.querySelector(a.getAttribute('href'));
                 if (t) window.scrollTo({ top: t.offsetTop - 70, behavior: 'smooth' });
             });
+        });
+
+        // Form submission to LOSC
+        const LOSC_URL = 'https://losc.ntemis.com';
+        document.getElementById('pi-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const status = document.getElementById('form-status');
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+            status.style.display = 'none';
+
+            try {
+                const res = await fetch(LOSC_URL + '/forms/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, message, source: 'personalintelligence.ai' }),
+                });
+                const data = await res.json();
+                if (data.success) {
+                    status.textContent = data.message;
+                    status.style.color = 'var(--accent)';
+                    document.getElementById('pi-form').reset();
+                } else {
+                    status.textContent = 'Something went wrong. Please email us directly.';
+                    status.style.color = '#ef4444';
+                }
+            } catch {
+                status.textContent = 'Could not connect. Please email us at hello@personalintelligence.ai';
+                status.style.color = '#ef4444';
+            }
+
+            status.style.display = 'block';
+            btn.disabled = false;
+            btn.textContent = 'Submit';
         });
     </script>
 
