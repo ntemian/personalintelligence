@@ -1774,7 +1774,9 @@
             </div>
 
             <div class="form-card r r1">
-                <form id="pi-form">
+                <form id="pi-form" action="https://formspree.io/f/xpwrzqvk" method="POST">
+                    <input type="hidden" name="_subject" value="New PI inquiry from personalintelligence.ai">
+                    <input type="hidden" name="_source" value="personalintelligence.ai">
                     <div class="form-field">
                         <label for="email">Your email</label>
                         <input type="email" id="email" name="email" placeholder="you@company.com" required>
@@ -1857,30 +1859,27 @@
             });
         });
 
-        // Form submission to LOSC
-        const LOSC_URL = 'https://seas-cheaper-determine-slight.trycloudflare.com';
+        // Form submission via Formspree (AJAX for smooth UX)
         document.getElementById('pi-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const form = e.target;
             const btn = document.getElementById('submit-btn');
             const status = document.getElementById('form-status');
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
 
             btn.disabled = true;
             btn.textContent = 'Sending...';
             status.style.display = 'none';
 
             try {
-                const res = await fetch(LOSC_URL + '/forms/submit', {
+                const res = await fetch(form.action, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, message, source: 'personalintelligence.ai' }),
+                    body: new FormData(form),
+                    headers: { 'Accept': 'application/json' },
                 });
-                const data = await res.json();
-                if (data.success) {
-                    status.textContent = data.message;
+                if (res.ok) {
+                    status.textContent = 'Thank you. We\'ll be in touch within 24 hours.';
                     status.style.color = 'var(--accent)';
-                    document.getElementById('pi-form').reset();
+                    form.reset();
                 } else {
                     status.textContent = 'Something went wrong. Please try again.';
                     status.style.color = '#ef4444';
