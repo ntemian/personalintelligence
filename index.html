@@ -301,7 +301,7 @@
         <h2 class="r">Tell us what you need.</h2>
         <p class="r">We respond within 24 hours.</p>
         <div class="fd r r1">
-            <form id="pi-form" action="https://formspree.io/f/xpwrzqvk" method="POST">
+            <form id="pi-form" action="https://formsubmit.co/ajax/elatsoudis@latsoudislaw.com" method="POST">
                 <div class="ff">
                     <label>Your email</label>
                     <input type="email" name="email" placeholder="you@company.com" required>
@@ -337,7 +337,8 @@ document.getElementById('pi-form').addEventListener('submit',async e=>{
     e.preventDefault();const f=e.target,b=document.getElementById('sb'),s=document.getElementById('fs');
     b.disabled=true;b.textContent='Sending...';s.style.display='none';
     try{const r=await fetch(f.action,{method:'POST',body:new FormData(f),headers:{Accept:'application/json'}});
-    if(r.ok){s.textContent='Thank you. We\'ll be in touch within 24 hours.';s.style.color='var(--a)';f.reset()}
+    const d=await r.json();
+    if(d.success){s.textContent='Thank you. We\'ll be in touch within 24 hours.';s.style.color='var(--a)';f.reset()}
     else{s.textContent='Something went wrong.';s.style.color='#ef4444'}}
     catch{s.textContent='Could not connect.';s.style.color='#ef4444'}
     s.style.display='block';b.disabled=false;b.textContent='Get started'});
