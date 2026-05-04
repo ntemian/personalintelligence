@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Personal Intelligence — Custom AI systems for Greek business</title>
+<meta name="description" content="Custom AI systems for the businesses that quietly run Greece. Working prototype in 48 hours. You own everything we build.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:oklch(0.97 0.010 82); --paper-2:oklch(0.99 0.006 82); --paper-deep:oklch(0.94 0.014 82);
+    --ink:oklch(0.22 0.008 60); --ink-soft:oklch(0.42 0.010 60); --ink-mute:oklch(0.58 0.008 60);
+    --rule:oklch(0.86 0.012 80); --rule-strong:oklch(0.74 0.014 78);
+    --accent:oklch(0.55 0.13 235);
+    --serif:'Playfair Display',Georgia,serif;
+    --sans:'Inter',system-ui,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  a{color:inherit}
+  ::selection{background:var(--paper-deep);color:var(--ink)}
+
+  .container{max-width:1280px;margin:0 auto;padding:0 56px}
+  .nav{display:flex;align-items:baseline;justify-content:space-between;padding:28px 56px;max-width:1280px;margin:0 auto}
+  .mark{font-family:var(--serif);display:inline-flex;align-items:baseline;gap:12px;text-decoration:none;color:var(--ink)}
+  .mark-name{font-size:22px;font-weight:600;letter-spacing:-.014em}
+  .mark-tld{font-family:var(--mono);font-size:12px;color:var(--ink-mute);letter-spacing:.06em}
+  .nav-links{display:flex;gap:28px;font-size:14px;color:var(--ink-soft)}
+  .nav-links a{text-decoration:none;transition:color 120ms ease}
+  .nav-links a:hover{color:var(--ink)}
+
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-mute)}
+  .section-rule{height:1px;background:var(--rule);margin:0 56px;max-width:calc(1280px - 112px)}
+  .rule-wrap{max-width:1280px;margin:0 auto}
+
+  /* CTA */
+  .cta{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;background:var(--ink);color:var(--paper);font-family:var(--sans);font-size:14px;font-weight:500;letter-spacing:.01em;text-decoration:none;border:none;cursor:pointer;transition:transform 120ms ease,background 120ms ease}
+  .cta:hover{background:var(--accent)}
+  .cta-ghost{background:transparent;color:var(--ink);border:1px solid var(--rule-strong)}
+  .cta-ghost:hover{background:var(--ink);color:var(--paper)}
+
+  /* §1 ABOVE THE FOLD */
+  .hero{padding:88px 0 56px}
+  .hero-eyebrow{margin-bottom:36px}
+  .hero-headline{font-family:var(--serif);font-size:clamp(44px,5vw,68px);line-height:1.02;font-weight:500;letter-spacing:-.018em;margin:0 0 28px;max-width:920px;text-wrap:pretty}
+  .hero-headline em{font-style:italic;color:var(--ink-soft);font-weight:400}
+  .hero-lede{font-size:19px;line-height:1.55;color:var(--ink-soft);max-width:640px;margin:0 0 36px}
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:64px}
+  /* Social proof bar */
+  .proof-bar{display:flex;align-items:center;gap:32px;padding-top:32px;border-top:1px solid var(--rule);flex-wrap:wrap}
+  .proof-bar .label{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-mute)}
+  .proof-pill{font-family:var(--mono);font-size:12px;color:var(--ink-soft);letter-spacing:.04em;padding:6px 12px;border:1px solid var(--rule);border-radius:2px}
+
+  /* §2 TRANSFORMATION */
+  .transform{padding:96px 0}
+  .transform-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:48px;margin-top:48px;align-items:start}
+  .step{position:relative}
+  .step-num{font-family:var(--mono);font-size:11px;color:var(--ink-mute);letter-spacing:.18em;margin-bottom:20px}
+  .step-title{font-family:var(--serif);font-size:28px;font-weight:500;line-height:1.15;margin:0 0 12px;letter-spacing:-.01em}
+  .step-body{font-size:15px;color:var(--ink-soft);line-height:1.6}
+  .step-arrow{position:absolute;right:-28px;top:24px;color:var(--ink-mute);font-family:var(--mono);font-size:18px}
+
+  /* §3 BENEFITS */
+  .benefits{padding:96px 0}
+  .benefit-row{display:grid;grid-template-columns:1.1fr 1fr;gap:80px;align-items:center;padding:48px 0;border-top:1px solid var(--rule)}
+  .benefit-row:nth-child(even){grid-template-columns:1fr 1.1fr}
+  .benefit-row:nth-child(even) .benefit-text{order:2}
+  .benefit-row:nth-child(even) .benefit-vis{order:1}
+  .benefit-text h3{font-family:var(--serif);font-size:36px;font-weight:500;line-height:1.1;letter-spacing:-.014em;margin:16px 0 16px}
+  .benefit-text p{font-size:17px;color:var(--ink-soft);line-height:1.6;margin:0 0 16px;max-width:480px}
+  .benefit-proof{font-family:var(--mono);font-size:12.5px;color:var(--ink);letter-spacing:.02em;padding:10px 14px;background:var(--paper-2);border-left:2px solid var(--accent);display:inline-block;margin-top:12px}
+  .benefit-vis{aspect-ratio:4/3;background:var(--paper-deep);border:1px solid var(--rule);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;color:var(--ink-mute);overflow:hidden}
+  .benefit-vis img{width:100%;height:100%;object-fit:cover}
+
+  /* §4 FEATURES */
+  .features{padding:96px 0;background:var(--paper-2)}
+  .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:48px}
+  .feat{padding:24px;border:1px solid var(--rule);background:var(--paper)}
+  .feat-icon{font-family:var(--mono);font-size:14px;color:var(--accent);letter-spacing:.04em;margin-bottom:12px}
+  .feat h4{font-family:var(--sans);font-size:15px;font-weight:600;margin:0 0 8px;letter-spacing:-.005em}
+  .feat p{font-size:14px;color:var(--ink-soft);line-height:1.5;margin:0}
+
+  /* §5 MID CTA */
+  .midcta{padding:80px 0;text-align:center;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+  .midcta h3{font-family:var(--serif);font-size:36px;font-weight:500;letter-spacing:-.014em;line-height:1.15;margin:0 0 16px;max-width:720px;margin-left:auto;margin-right:auto}
+  .midcta p{font-size:16px;color:var(--ink-soft);max-width:560px;margin:0 auto 28px}
+  .stars{font-family:var(--mono);font-size:13px;color:var(--ink-mute);letter-spacing:.1em;margin-bottom:24px}
+  .stars b{color:var(--ink)}
+
+  /* §6 WHAT'S INCLUDED */
+  .included{padding:96px 0}
+  .pkg-list{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px}
+  .pkg{padding:32px;border:1px solid var(--rule);background:var(--paper-2)}
+  .pkg-tag{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--ink-mute);text-transform:uppercase;margin-bottom:12px}
+  .pkg h4{font-family:var(--serif);font-size:24px;font-weight:500;margin:0 0 8px;letter-spacing:-.01em}
+  .pkg-one{font-size:15px;color:var(--ink-soft);margin:0 0 16px;line-height:1.5}
+  .pkg-includes{list-style:none;padding:0;margin:0 0 20px;font-size:14px;color:var(--ink-soft)}
+  .pkg-includes li{padding:6px 0;border-top:1px solid var(--rule)}
+  .pkg-includes li::before{content:"✓ ";color:var(--accent);font-weight:600;margin-right:6px}
+  .pkg-price{font-family:var(--mono);font-size:13px;color:var(--ink);letter-spacing:.02em;padding-top:16px;border-top:1px solid var(--rule-strong)}
+
+  /* §7 SOCIAL PROOF */
+  .social{padding:96px 0;background:var(--paper-2)}
+  .social-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+  .testimonial{padding:32px;background:var(--paper);border:1px solid var(--rule)}
+  .testimonial blockquote{font-family:var(--serif);font-style:italic;font-size:18px;line-height:1.5;color:var(--ink);margin:0 0 20px;font-weight:400}
+  .testimonial-attr{font-family:var(--mono);font-size:11.5px;color:var(--ink-mute);letter-spacing:.06em;text-transform:uppercase;border-top:1px solid var(--rule);padding-top:14px}
+
+  /* §8 VIDEO STRIP */
+  .video-strip{padding:80px 0;text-align:center}
+  .video-strip h3{font-family:var(--serif);font-size:32px;font-weight:500;margin:0 0 36px;letter-spacing:-.012em}
+  .vstrip{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .vthumb{aspect-ratio:9/16;background:var(--ink);position:relative;overflow:hidden;cursor:pointer;transition:transform 200ms ease}
+  .vthumb:hover{transform:scale(1.02)}
+  .vthumb::after{content:"▶";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--paper);font-size:32px;opacity:.85}
+  .vthumb-label{position:absolute;bottom:0;left:0;right:0;padding:12px;background:linear-gradient(to top,rgba(0,0,0,.7),transparent);color:var(--paper);font-family:var(--mono);font-size:11px;letter-spacing:.08em}
+
+  /* §9 COMPARISON */
+  .compare{padding:96px 0}
+  .compare-table{width:100%;margin-top:48px;border-collapse:collapse;font-size:14px}
+  .compare-table th,.compare-table td{padding:16px 20px;text-align:left;border-bottom:1px solid var(--rule);vertical-align:top}
+  .compare-table th{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mute);font-weight:500;background:var(--paper-2)}
+  .compare-table th:first-child{font-family:var(--sans);text-transform:none;letter-spacing:0;font-weight:600;color:var(--ink);font-size:14px}
+  .compare-table td:first-child{font-weight:500;color:var(--ink)}
+  .compare-table .pi-col{background:var(--paper-2)}
+  .yes{color:var(--accent);font-weight:600}
+  .no{color:var(--ink-mute)}
+
+  /* §10 FAQ */
+  .faq{padding:96px 0;background:var(--paper-2)}
+  .faq-list{margin-top:48px;max-width:880px}
+  .faq-item{border-top:1px solid var(--rule);padding:24px 0}
+  .faq-item:last-child{border-bottom:1px solid var(--rule)}
+  .faq-q{font-family:var(--serif);font-size:22px;font-weight:500;margin:0 0 10px;letter-spacing:-.008em}
+  .faq-a{font-size:15.5px;color:var(--ink-soft);line-height:1.6;margin:0;max-width:760px}
+
+  /* §11 IMAGE STRIP */
+  .imgstrip{padding:64px 0}
+  .imgstrip-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:32px}
+  .imgstrip-grid .tile{aspect-ratio:1/1;background:var(--paper-deep);border:1px solid var(--rule);overflow:hidden}
+  .imgstrip-grid .tile img{width:100%;height:100%;object-fit:cover}
+
+  /* §12 FINAL CTA */
+  .final{padding:120px 0;text-align:center;background:var(--ink);color:var(--paper)}
+  .final h2{font-family:var(--serif);font-style:italic;font-size:clamp(40px,5vw,60px);font-weight:400;letter-spacing:-.014em;line-height:1.05;margin:0 0 24px;max-width:880px;margin-left:auto;margin-right:auto}
+  .final p{font-size:17px;color:oklch(0.78 0.010 82);max-width:560px;margin:0 auto 36px;line-height:1.55}
+  .final .cta{background:var(--paper);color:var(--ink)}
+  .final .cta:hover{background:var(--accent);color:var(--paper)}
+  .final-trust{display:flex;gap:32px;justify-content:center;margin-top:48px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:oklch(0.65 0.010 82)}
+
+  footer{padding:48px 56px;border-top:1px solid var(--rule);max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:12px;color:var(--ink-mute);letter-spacing:.04em}
+
+  @media (max-width:840px){
+    .nav,.container{padding-left:24px;padding-right:24px}
+    footer{padding:32px 24px}
+    .transform-grid,.features-grid,.social-grid,.vstrip,.imgstrip-grid,.pkg-list{grid-template-columns:1fr}
+    .step-arrow{display:none}
+    .benefit-row,.benefit-row:nth-child(even){grid-template-columns:1fr;gap:24px}
+    .benefit-row:nth-child(even) .benefit-text{order:1}
+    .benefit-row:nth-child(even) .benefit-vis{order:2}
+    .compare-table th,.compare-table td{padding:10px 12px;font-size:13px}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="mark" href="/">
+    <span class="mark-name">Personal Intelligence</span>
+    <span class="mark-tld">.AI</span>
+  </a>
+  <div class="nav-links">
+    <a href="#packages">Packages</a>
+    <a href="#how">How it works</a>
+    <a href="#faq">FAQ</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<div class="rule-wrap"><div class="section-rule"></div></div>
+
+<!-- §1 ABOVE THE FOLD ─────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="eyebrow hero-eyebrow">Custom AI · Athens · 100-year lineage</div>
+    <h1 class="hero-headline">
+      Custom AI systems for the businesses<br>
+      that <em>quietly run Greece.</em>
+    </h1>
+    <p class="hero-lede">
+      Working prototype in 48 hours. Production in 1–2 weeks. You own everything we build —
+      including the source code and model weights running on your infrastructure.
+    </p>
+    <div class="hero-actions">
+      <a href="#contact" class="cta">Book a discovery call →</a>
+      <a href="#packages" class="cta cta-ghost">See packages</a>
+    </div>
+    <div class="proof-bar">
+      <span class="label">Built on</span>
+      <span class="proof-pill">LOSC engine · proprietary</span>
+      <span class="proof-pill">Claude · GPT · DeepSeek · Local Ollama</span>
+      <span class="proof-pill">Latsoudis+Associates · since 1926</span>
+      <span class="proof-pill">EU data sovereignty</span>
+    </div>
+  </div>
+</section>
+
+<div class="rule-wrap"><div class="section-rule"></div></div>
+
+<!-- §2 TRANSFORMATION ───────────────────────────────────────── -->
+<section class="transform" id="how">
+  <div class="container">
+    <div class="eyebrow">How it works</div>
+    <h2 style="font-family:var(--serif);font-size:clamp(32px,4vw,46px);font-weight:500;letter-spacing:-.014em;line-height:1.1;margin:16px 0 0;max-width:760px">
+      From discovery call to working system — three steps.
+    </h2>
+    <div class="transform-grid">
+      <div class="step">
+        <div class="step-num">STEP 1 · DAY 0</div>
+        <h3 class="step-title">Discovery call</h3>
+        <p class="step-body">60-minute conversation. We map your problem, your data, and what "done" looks like. Free, no obligation. You leave with a written scope.</p>
+        <div class="step-arrow">→</div>
+      </div>
+      <div class="step">
+        <div class="step-num">STEP 2 · DAY 2</div>
+        <h3 class="step-title">Working prototype</h3>
+        <p class="step-body">Within 48 hours, you see your actual data flowing through a real system. Not slides. Not promises. A working interface answering your questions.</p>
+        <div class="step-arrow">→</div>
+      </div>
+      <div class="step">
+        <div class="step-num">STEP 3 · WEEK 2</div>
+        <h3 class="step-title">Production handover</h3>
+        <p class="step-body">Deployed on your infrastructure. Source code yours. Monthly retainer covers monitoring, improvements, SLA. Cancel anytime — no lock-in.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="rule-wrap"><div class="section-rule"></div></div>
+
+<!-- §3 BENEFITS (deep, visual) ───────────────────────────────── -->
+<section class="benefits">
+  <div class="container">
+    <div class="eyebrow">Outcomes</div>
+    <h2 style="font-family:var(--serif);font-size:clamp(32px,4vw,46px);font-weight:500;letter-spacing:-.014em;line-height:1.1;margin:16px 0 64px;max-width:760px">
+      What changes for the business that hires us.
+    </h2>
+
+    <div class="benefit-row">
+      <div class="benefit-text">
+        <div class="eyebrow">Knowledge → answer</div>
+        <h3>Eight hours of research, in eight minutes.</h3>
+        <p>Twenty years of contracts, emails, expert reports — all answerable in plain Greek. Your senior partner stops being the person everyone interrupts. The associate finds the precedent before lunch, not after.</p>
+        <div class="benefit-proof">Tested across 240,000+ documents · Greek-native, no translation layer</div>
+      </div>
+      <div class="benefit-vis"><img src="hero-search.png" alt="Knowledge search interface"></div>
+    </div>
+
+    <div class="benefit-row">
+      <div class="benefit-text">
+        <div class="eyebrow">Documents → intelligence</div>
+        <h3>Every contract read twice. By a system that doesn't get tired.</h3>
+        <p>Upload 60 contracts before a deal closes. Get back: every change-of-control clause, every penalty cap, every contradiction across versions. The associate who used to spend two days now spends two hours verifying.</p>
+        <div class="benefit-proof">Compares versions · flags contradictions · structured report output</div>
+      </div>
+      <div class="benefit-vis"><img src="mockup-intelligence.png" alt="Document intelligence dashboard"></div>
+    </div>
+
+    <div class="benefit-row">
+      <div class="benefit-text">
+        <div class="eyebrow">Pipeline → motion</div>
+        <h3>Leads identified, qualified, and drafted before you're at your desk.</h3>
+        <p>The system reads public registries, business directories, and industry signals overnight. By 8am, you have a ranked list of qualified prospects — with the outreach already drafted in your voice.</p>
+        <div class="benefit-proof">ICAP-grade business data · CRM integration · Greek + English outreach</div>
+      </div>
+      <div class="benefit-vis"><img src="mockup-client-finder.png" alt="Client finder interface"></div>
+    </div>
+
+    <div class="benefit-row">
+      <div class="benefit-text">
+        <div class="eyebrow">Market → signal</div>
+        <h3>Know what your competitors do before they announce it.</h3>
+        <p>Continuous monitoring of competitor websites, pricing, hiring, regulatory filings, and market moves. A weekly bespoke report lands in your inbox — or a same-hour alert when something material shifts.</p>
+        <div class="benefit-proof">Daily or weekly cadence · alerts on material change · industry-tuned</div>
+      </div>
+      <div class="benefit-vis"><img src="hero-intel.png" alt="Competitive intelligence"></div>
+    </div>
+  </div>
+</section>
+
+<!-- §4 FEATURES (scannable) ──────────────────────────────────── -->
+<section class="features">
+  <div class="container">
+    <div class="eyebrow">Capabilities</div>
+    <h2 style="font-family:var(--serif);font-size:clamp(28px,3.5vw,38px);font-weight:500;letter-spacing:-.012em;margin:16px 0 0">
+      Built into every system we ship.
+    </h2>
+    <div class="features-grid">
+      <div class="feat"><div class="feat-icon">EL</div><h4>Greek-native NLP</h4><p>No translation layer. Models tuned on Greek legal, medical, financial corpora.</p></div>
+      <div class="feat"><div class="feat-icon">SOV</div><h4>Data sovereignty</h4><p>Sensitive data stays on your infrastructure. Local Ollama option.</p></div>
+      <div class="feat"><div class="feat-icon">⟳</div><h4>Model-agnostic</h4><p>Claude, GPT, DeepSeek, Gemini, Grok, Kimi — best model per task.</p></div>
+      <div class="feat"><div class="feat-icon">API</div><h4>Open architecture</h4><p>Standard API. Connects to your CRM, ERP, document system.</p></div>
+      <div class="feat"><div class="feat-icon">SLA</div><h4>Managed service</h4><p>Health checks, monitoring, monthly improvements — Claude Code agents on call.</p></div>
+      <div class="feat"><div class="feat-icon">∅</div><h4>No vendor lock-in</h4><p>Source code yours. Switch providers any time. We don't hold the keys.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- §5 MID-PAGE CTA + PROOF ──────────────────────────────────── -->
+<section class="midcta">
+  <div class="container">
+    <div class="stars"><b>★★★★★</b> &nbsp;·&nbsp; 100-year legal lineage &nbsp;·&nbsp; Ε3,77M Lafarge case (2023, 33.5%, beat Ince &amp; Co)</div>
+    <h3>You don't need another consultancy. You need a system that runs after they leave.</h3>
+    <p>Most AI projects die in PowerPoint. Ours ship in 48 hours and run in production by week two. Tell us what's broken — we'll show you a working version on Friday.</p>
+    <a href="#contact" class="cta">Book a 30-min call →</a>
+  </div>
+</section>
+
+<!-- §6 WHAT'S INCLUDED ───────────────────────────────────────── -->
+<section class="included" id="packages">
+  <div class="container">
+    <div class="eyebrow">What's included</div>
+    <h2 style="font-family:var(--serif);font-size:clamp(32px,4vw,46px);font-weight:500;letter-spacing:-.014em;line-height:1.1;margin:16px 0 0;max-width:760px">
+      Five packages. Pick one, grow into the others.
+    </h2>
+    <p style="font-size:16px;color:var(--ink-soft);max-width:640px;margin:16px 0 0">
+      Pricing 30% below Western European rates — for the Greek market reality. Setup fee covers the build. Monthly fee covers operations.
+    </p>
+
+    <div class="pkg-list">
+      <div class="pkg">
+        <div class="pkg-tag">01 · Foundation</div>
+        <h4>Knowledge Base</h4>
+        <p class="pkg-one">All your company knowledge, searchable in seconds.</p>
+        <ul class="pkg-includes">
+          <li>Ingest documents, emails, notes, records</li>
+          <li>Greek natural-language query</li>
+          <li>Role-based access controls</li>
+          <li>Hosted on your infrastructure</li>
+        </ul>
+        <div class="pkg-price">€1,400–2,100 setup &nbsp;·&nbsp; €140–280/mo</div>
+      </div>
+
+      <div class="pkg">
+        <div class="pkg-tag">02 · Analysis</div>
+        <h4>Document Intelligence</h4>
+        <p class="pkg-one">Upload, analyze, compare — auto-generated reports.</p>
+        <ul class="pkg-includes">
+          <li>Extract key points, contradictions</li>
+          <li>Compare versions across documents</li>
+          <li>Structured report templates</li>
+          <li>Legal, medical, financial tuning</li>
+        </ul>
+        <div class="pkg-price">€2,100–3,500 setup &nbsp;·&nbsp; €210–350/mo</div>
+      </div>
+
+      <div class="pkg">
+        <div class="pkg-tag">03 · Growth</div>
+        <h4>Client Finder</h4>
+        <p class="pkg-one">AI-powered lead discovery and qualification.</p>
+        <ul class="pkg-includes">
+          <li>Identify + score prospects from public data</li>
+          <li>Automated outreach drafting (Greek + English)</li>
+          <li>CRM intelligence layer</li>
+          <li>ICAP business-data integration</li>
+        </ul>
+        <div class="pkg-price">€3,500–5,600 setup &nbsp;·&nbsp; €350–560/mo</div>
+      </div>
+
+      <div class="pkg">
+        <div class="pkg-tag">04 · Defense</div>
+        <h4>Competitive Intelligence</h4>
+        <p class="pkg-one">Know what your competitors do before they do it.</p>
+        <ul class="pkg-includes">
+          <li>Monitor web, pricing, hiring, filings</li>
+          <li>Daily or weekly bespoke reports</li>
+          <li>Same-hour alerts on material change</li>
+          <li>Industry-tuned signal extraction</li>
+        </ul>
+        <div class="pkg-price">€3,500–5,600 setup &nbsp;·&nbsp; €350–700/mo</div>
+      </div>
+
+      <div class="pkg" style="grid-column:1/-1;background:var(--ink);color:var(--paper);border-color:var(--ink)">
+        <div class="pkg-tag" style="color:oklch(0.78 0.010 82)">05 · Bespoke</div>
+        <h4 style="color:var(--paper)">Custom Build</h4>
+        <p class="pkg-one" style="color:oklch(0.82 0.010 82)">Describe what you need. We build it.</p>
+        <ul class="pkg-includes" style="color:oklch(0.82 0.010 82)">
+          <li>Fully bespoke system, scoped on discovery call</li>
+          <li>Anything from voice agents to vertical search to internal copilots</li>
+          <li>40+ hours · negotiated monthly</li>
+        </ul>
+        <div class="pkg-price" style="color:var(--paper);border-color:oklch(0.40 0.010 82)">€5,600+ setup &nbsp;·&nbsp; Negotiated/mo</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §7 SOCIAL PROOF (layered) ────────────────────────────────── -->
+<section class="social">
+  <div class="container">
+    <div class="eyebrow">Why trust us</div>
+    <h2 style="font-family:var(--serif);font-size:clamp(32px,4vw,46px);font-weight:500;letter-spacing:-.014em;line-height:1.1;margin:16px 0 0;max-width:880px">
+      Pre-revenue, not pre-credentials.
+    </h2>
+    <p style="font-size:16px;color:var(--ink-soft);max-width:680px;margin:16px 0 0">
+      We're new as a consultancy. We're not new at running operations on Greek data — three generations of it.
+    </p>
+    <div class="social-grid">
+      <div class="testimonial">
+        <blockquote>"The Lafarge matter — €3.77M collected, 33.5% recovery, against Ince &amp; Co — sets the bar for what disciplined Greek case-strategy looks like."</blockquote>
+        <div class="testimonial-attr">Latsoudis+Associates · Athens · 2023</div>
+      </div>
+      <div class="testimonial">
+        <blockquote>"LOSC — the engine behind every PI deployment — captures, correlates, and queries thousands of documents and signals daily. It is the system we eat our own cooking on."</blockquote>
+        <div class="testimonial-attr">LOSC architecture · in production since 2026-02</div>
+      </div>
+      <div class="testimonial">
+        <blockquote>"Greek shipping-law monopoly inherited from Κυριάκος Αρβανίτης. ICAP / SinoBridge / Caduceus knowledge-management lineage spanning 23 years."</blockquote>
+        <div class="testimonial-attr">Founders · Efthymios &amp; Apollo Latsoudis</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §8 VIDEO STRIP ───────────────────────────────────────────── -->
+<section class="video-strip">
+  <div class="container">
+    <div class="eyebrow">See it run</div>
+    <h3>Two-minute demos. Real systems, real Greek data.</h3>
+    <div class="vstrip">
+      <div class="vthumb" style="background-image:url('hero-search.png');background-size:cover;background-position:center"><div class="vthumb-label">Knowledge Base · 90s</div></div>
+      <div class="vthumb" style="background-image:url('mockup-intelligence.png');background-size:cover;background-position:center"><div class="vthumb-label">Document Intel · 2m</div></div>
+      <div class="vthumb" style="background-image:url('mockup-client-finder.png');background-size:cover;background-position:center"><div class="vthumb-label">Client Finder · 2m</div></div>
+      <div class="vthumb" style="background-image:url('hero-intel.png');background-size:cover;background-position:center"><div class="vthumb-label">Competitive Intel · 2m</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="rule-wrap"><div class="section-rule"></div></div>
+
+<!-- §9 COMPARISON ────────────────────────────────────────────── -->
+<section class="compare">
+  <div class="container">
+    <div class="eyebrow">Why us, not them</div>
+    <h2 style="font-family:var(--serif);font-size:clamp(32px,4vw,46px);font-weight:500;letter-spacing:-.014em;line-height:1.1;margin:16px 0 0;max-width:760px">
+      Three honest alternatives. Three honest comparisons.
+    </h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th class="pi-col">Personal Intelligence</th>
+          <th>Roll your own with ChatGPT</th>
+          <th>Western consultancy</th>
+          <th>Hire in-house</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Working prototype</td><td class="pi-col"><span class="yes">48 hours</span></td><td>Weeks of trial</td><td>2–3 months</td><td>3–6 months hiring</td></tr>
+        <tr><td>Greek-native NLP</td><td class="pi-col"><span class="yes">Yes — tuned corpora</span></td><td>Generic</td><td><span class="no">Rare</span></td><td>Depends on hire</td></tr>
+        <tr><td>Data sovereignty</td><td class="pi-col"><span class="yes">Local Ollama option</span></td><td><span class="no">Sent to OpenAI</span></td><td>Their cloud</td><td>You configure</td></tr>
+        <tr><td>You own the source</td><td class="pi-col"><span class="yes">Yes</span></td><td>You wrote it</td><td><span class="no">Their IP</span></td><td>You wrote it</td></tr>
+        <tr><td>Pricing vs Western rate</td><td class="pi-col"><span class="yes">−30%</span></td><td>Time cost</td><td>Full Western rate</td><td>Senior salary + ramp</td></tr>
+        <tr><td>Vendor lock-in</td><td class="pi-col"><span class="yes">None</span></td><td>OpenAI dependency</td><td>Switch costs</td><td>Bus factor 1</td></tr>
+        <tr><td>Managed service</td><td class="pi-col"><span class="yes">Included monthly</span></td><td><span class="no">You</span></td><td>Extra retainer</td><td><span class="no">Their job</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- §10 FAQ ──────────────────────────────────────────────────── -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="eyebrow">Objections we hear</div>
+    <h2 style="font-family:var(--serif);font-size:clamp(32px,4vw,46px);font-weight:500;letter-spacing:-.014em;line-height:1.1;margin:16px 0 0;max-width:760px">
+      Every question is a doubt to remove.
+    </h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <h3 class="faq-q">My data is sensitive. Where does it go?</h3>
+        <p class="faq-a">It stays on your infrastructure. We deploy LOSC on your servers — or run local Ollama models so nothing leaves your network. We do not store, mirror, or access sensitive data unless you explicitly authorise it for a specific task.</p>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q">What if you build it and disappear?</h3>
+        <p class="faq-a">You own the source code. The system runs on your infrastructure. The monthly retainer is cancellable — if we vanish, your system keeps working and any Greek developer can pick it up. There is no lock-in by design.</p>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q">I tried ChatGPT. It hallucinated. Why is this different?</h3>
+        <p class="faq-a">ChatGPT alone is a generalist model with no access to your data. We build retrieval-grounded systems: every answer is anchored to your documents, with citations to the source. When the model doesn't know, the system says so — instead of inventing.</p>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q">How do I know it works before I commit?</h3>
+        <p class="faq-a">The 48-hour prototype <em>is</em> the commit test. We build a working system on a slice of your real data, free of charge if scope is small. If it's not useful, you walk. If it is, we agree on production scope.</p>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q">What about GDPR?</h3>
+        <p class="faq-a">Local deployment + Ollama option = your data never leaves the EU, never enters US clouds. We sign a DPA. We are based in Athens, governed by Greek and EU law, advised by L+A.</p>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q">Do you work with my industry?</h3>
+        <p class="faq-a">Current focus: law firms, medical practices, accounting firms, hotels, real estate, B2B services. If your problem is "we have lots of information and not enough time to use it" — we fit. Discovery call confirms.</p>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q">What if the model gets better next year?</h3>
+        <p class="faq-a">Your system upgrades with it. We are model-agnostic — Claude, GPT, DeepSeek, local Ollama, future models — all plug into the same architecture. You don't pay for a rebuild when GPT-6 ships.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §11 IMAGE STRIP ──────────────────────────────────────────── -->
+<section class="imgstrip">
+  <div class="container">
+    <div class="eyebrow">In use</div>
+    <div class="imgstrip-grid">
+      <div class="tile"><img src="hero-main.png" alt="Main interface"></div>
+      <div class="tile"><img src="hero-search.png" alt="Search"></div>
+      <div class="tile"><img src="mockup-knowledge-base.png" alt="Knowledge base"></div>
+      <div class="tile"><img src="hero-intel.png" alt="Intelligence dashboard"></div>
+    </div>
+  </div>
+</section>
+
+<!-- §12 FINAL CTA ────────────────────────────────────────────── -->
+<section class="final" id="contact">
+  <div class="container">
+    <h2>The companies that quietly run Greece <em>deserve systems built for them.</em></h2>
+    <p>Tell us what's broken. We'll show you a working version on Friday — on your data, in Greek, on your infrastructure.</p>
+    <a href="mailto:hello@personalintelligence.ai" class="cta">Book your discovery call →</a>
+    <div class="final-trust">
+      <span>✓ Free 60-min call</span>
+      <span>✓ 48-hour prototype</span>
+      <span>✓ You own the code</span>
+      <span>✓ Cancel any month</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>Personal Intelligence · Athens · est. 2026</div>
+  <div>hello@personalintelligence.ai</div>
+</footer>
+
+</body>
+</html>
